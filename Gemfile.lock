@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    capybara-table (0.0.2)
+    capybara-table (0.0.3)
       capybara
       hashie
 

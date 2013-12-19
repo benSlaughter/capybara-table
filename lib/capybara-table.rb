@@ -37,16 +37,16 @@ class Table
     all("#{@element} > tbody > tr").each_with_index{ |r,i| @row_headers[r.find("td:first-child").text.downcase] = i }
   end
 
-  def get_cells row, columns
-    columns = columns.map{|c| @headers[c.downcase] ? @headers[c.downcase] : [] }.inject(:&)
-    row = @row_headers[row.downcase]
+  def get_cells row_name, columns_array
+    columns = columns_array.map{|c| @headers[c.downcase] ? @headers[c.downcase] : [] }.inject(:&)
+    row = @row_headers[row_name.downcase]
 
     temp = []
     columns.each do |column_index|
       temp.push @table_body[row][column_index]
     end
 
-    raise "Unable to find any matching data with row: %s and columns: %s" % [row, columns.to_s] if temp.empty?
+    raise "Unable to find any matching data with row: %s and columns: %s" % [row_name.to_s, columns_array.to_s] if temp.empty?
     temp.length == 1 ? temp.first : temp
   end
 

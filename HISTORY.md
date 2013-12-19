@@ -1,5 +1,13 @@
 ## Released Versions
 ### Version 0.0.2
+#### Patch: Improvement to error handling
+##### Changed
+ * Improved error handling when no data found
+
+##### Added
+##### Fixed
+
+### Version 0.0.2
 #### Patch: Improvement to parsing and querying
 ##### Changed
  * All data parsing and querying downcased
