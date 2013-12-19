@@ -6,54 +6,56 @@ class Table
   include Capybara::DSL
 
   def initialize element = "table"
-    @element = element
-    parse_table
+    @element     = element
+    @headers     = Hashie::Mash.new
+    @row_headers = Hashie::Mash.new
+
+    parse_body
     parse_headers
-    parse_rows
+    parse_row_headers
   end
 
-  def parse_table
-    @table = all("#{@element} > tbody > tr").map{ |h| h.all("td").map{| e| e.text } }
+  def parse_body
+    @table_body = all("#{@element} > tbody > tr").map{ |h| h.all("td").map{| e| e.text.downcase } }
   end
 
   def parse_headers
-    @headers = Hashie::Mash.new
-    @header_rows = Hashie::Mash.new
     all("table > thead > tr").map{ |h| h.all "th" }.each do | header_row |
-      index = 0
-      header_row.each_with_index do | header, index |
-        @headers[header.text] ||= []
+      column_index = 0
+      header_row.each do | header |
+        @headers[header.text.downcase] ||= []
         (header["colspan"] ? header["colspan"].to_i : 1).times do
-          @headers[header.text].push index
-          index += 1
+          @headers[header.text.downcase].push column_index
+
+          column_index += 1
         end
       end
     end
   end
 
-  def parse_rows
-    @row_headers = Hashie::Mash.new
-    all("#{@element} > tbody > tr").each_with_index{ |r,i| @row_headers[r.find("td:first-child").text] = i }
+  def parse_row_headers
+    all("#{@element} > tbody > tr").each_with_index{ |r,i| @row_headers[r.find("td:first-child").text.downcase] = i }
   end
 
-  def get_info row, columns
-    columns = columns.map{|c| @headers[c] }.inject(:&)
-    row = @row_headers[row]
+  def get_cells row, columns
+    columns = columns.map{|c| @headers[c.downcase] ? @headers[c.downcase] : [] }.inject(:&)
+    row = @row_headers[row.downcase]
 
     temp = []
     columns.each do |column_index|
-      temp.push @table[row][column_index]
+      temp.push @table_body[row][column_index]
     end
 
-    temp
+    raise "Unable to find any matching data with row: %s and columns: %s" % [row, columns.to_s] if temp.empty?
+    temp.length == 1 ? temp.first : temp
   end
 
   def row number
-    @table[number]
+    @table_body[number]
   end
 
   def column number
-    @headers.inject([]) { |sum,h| h[1].include?(number) ? sum.push(h[0]) : sum} + @table.map {|r| r[number]}
+    @headers.inject([]) { |sum,h| h[1].include?(number) ? sum.push(h[0]) : sum} + @table_body.map {|r| r[number]}
   end
 
   def width
@@ -65,6 +67,6 @@ class Table
   end
 
   def [] number
-    @table.map {|r| r[number]}
+    @table_body.map {|r| r[number]}
   end
 end
