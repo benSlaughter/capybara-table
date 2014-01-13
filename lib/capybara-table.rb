@@ -40,6 +40,7 @@ class Table
   def get_cells row_name, columns_array
     columns = columns_array.map{|c| @headers[c.downcase] ? @headers[c.downcase] : [] }.inject(:&)
     row = @row_headers[row_name.downcase]
+    raise "Could not find row: %s in row headers: %s" % [row_name.downcase, @row_headers] if row.nil?
 
     temp = []
     columns.each do |column_index|
