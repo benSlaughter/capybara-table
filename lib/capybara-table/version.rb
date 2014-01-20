@@ -1,6 +1,6 @@
 class Table
   # Current Allotment verion
-  VERSION = "0.0.3".freeze
+  VERSION = "0.0.4".freeze
   # Date version created
-  DATE = "2013-12-19".freeze
+  DATE = "2014-01-20".freeze
 end
