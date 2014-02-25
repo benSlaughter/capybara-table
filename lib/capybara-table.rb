@@ -20,7 +20,7 @@ class Table
   end
 
   def parse_headers
-    all("table > thead > tr").map{ |h| h.all "th" }.each do | header_row |
+    all("#{@element} > thead > tr").map{ |h| h.all "th" }.each do | header_row |
       column_index = 0
       header_row.each do | header |
         @headers[header.text.downcase] ||= []
