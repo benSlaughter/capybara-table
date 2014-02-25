@@ -1,9 +1,15 @@
 ## Released Versions
-### Version 0.0.2
+### Version 0.1.0
+#### Minor: fix to table header parsing string
+##### Changed
+##### Added
+##### Fixed
+* Fixed table header parsing string to include element
+
+### Version 0.0.3
 #### Patch: Improvement to error handling
 ##### Changed
  * Improved error handling when no data found
-
 ##### Added
 ##### Fixed
 
